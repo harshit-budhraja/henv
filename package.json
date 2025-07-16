@@ -15,7 +15,7 @@
     "start": "node dist/index.js"
   },
   "keywords": ["cli", "environment", "env", "dotenv"],
-  "author": "",
+  "author": "Harshit Budhraja",
   "license": "MIT",
   "dependencies": {
     "inquirer": "^8.2.6",
