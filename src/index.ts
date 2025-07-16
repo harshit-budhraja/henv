@@ -2,13 +2,14 @@
 
 import { Command } from 'commander';
 import { handleListCommand } from './commands/list';
+import { version, description } from '../package.json';
 
 const program = new Command();
 
 program
   .name('henv')
-  .description('Interactive CLI tool for managing local environment variables')
-  .version('1.0.0');
+  .description(description)
+  .version(version);
 
 program
   .command('list')
@@ -21,7 +22,7 @@ program
 // Default command (when no command is specified, run list)
 program
   .action(async () => {
-    await handleListCommand();
+    // TODO: Add help command
   });
 
 // Parse command line arguments

@@ -7,7 +7,7 @@ import { EnvFile, EnvVariable } from '../utils/env';
  * Display a welcome message
  */
 export function displayWelcome(): void {
-  console.log(chalk.cyan.bold('\n🌱 HENV - Environment Variable Manager\n'));
+  // console.log(chalk.cyan.bold('\n🌱 HENV - Environment Variable Manager\n'));
 }
 
 /**

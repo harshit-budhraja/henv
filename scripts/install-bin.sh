@@ -33,8 +33,7 @@ fi
 # Create the production executable wrapper
 cat << EOF | sudo tee "$BIN_PATH" > /dev/null
 #!/bin/bash
-cd "$PROJECT_ROOT"
-node dist/index.js "\$@"
+node "$PROJECT_ROOT/dist/index.js" "\$@"
 EOF
 
 # Make it executable

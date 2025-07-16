@@ -29,8 +29,7 @@ echo -e "${YELLOW}🛠️  Setting up development environment...${NC}"
 # Create temporary executable that uses ts-node for live reloading
 cat << EOF | sudo tee "$DEV_BIN_PATH" > /dev/null
 #!/bin/bash
-cd "$PROJECT_ROOT"
-npx ts-node src/index.ts "\$@"
+npx ts-node "$PROJECT_ROOT/src/index.ts" "\$@"
 EOF
 
 # Make it executable
