@@ -12,15 +12,15 @@ import {
 /**
  * Handle the list command
  */
-export async function handleListCommand(targetDir: string = process.cwd()): Promise<void> {
+export async function handleListCommand(targetDir: string = process.cwd(), maxDepth?: number): Promise<void> {
   displayWelcome();
 
   try {
     // Check if current directory is a git repository
     if (isGitRepository(targetDir)) {
-      await handleSingleProject(targetDir);
+      await handleSingleProject(targetDir, maxDepth);
     } else {
-      await handleMultipleProjects(targetDir);
+      await handleMultipleProjects(targetDir, maxDepth);
     }
   } catch (error) {
     displayError(`An unexpected error occurred: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -31,14 +31,14 @@ export async function handleListCommand(targetDir: string = process.cwd()): Prom
 /**
  * Handle the case where we're in a single git project
  */
-async function handleSingleProject(projectPath: string): Promise<void> {
+async function handleSingleProject(projectPath: string, maxDepth?: number): Promise<void> {
   const gitRoot = getGitRoot(projectPath);
   const projectDir = gitRoot || projectPath;
   const projectName = path.basename(projectDir);
 
   displayInfo(`Found git project: ${projectName}`);
 
-  const envFiles = getProjectEnvFiles(projectDir);
+  const envFiles = getProjectEnvFiles(projectDir, maxDepth);
   displayProjectEnvFiles(projectName, envFiles);
 
   if (envFiles.length === 0) {
@@ -49,7 +49,7 @@ async function handleSingleProject(projectPath: string): Promise<void> {
 /**
  * Handle the case where we need to discover multiple projects
  */
-async function handleMultipleProjects(baseDir: string): Promise<void> {
+async function handleMultipleProjects(baseDir: string, maxDepth?: number): Promise<void> {
   displayInfo('Scanning for git projects...');
 
   const projects = findGitProjects(baseDir);
@@ -62,7 +62,7 @@ async function handleMultipleProjects(baseDir: string): Promise<void> {
 
   // Filter projects that have environment files
   const projectsWithEnv = projects.filter(project => {
-    const envFiles = getProjectEnvFiles(project.path);
+    const envFiles = getProjectEnvFiles(project.path, maxDepth);
     return envFiles.length > 0;
   });
 
@@ -83,7 +83,7 @@ async function handleMultipleProjects(baseDir: string): Promise<void> {
   // Show summary of projects with env files
   console.log('');
   projectsWithEnv.forEach(project => {
-    const envFiles = getProjectEnvFiles(project.path);
+    const envFiles = getProjectEnvFiles(project.path, maxDepth);
     console.log(`📁 ${project.name} - ${envFiles.length} environment file(s)`);
   });
 
@@ -91,7 +91,7 @@ async function handleMultipleProjects(baseDir: string): Promise<void> {
   const selectedProject = await selectProject(projectsWithEnv);
 
   if (selectedProject) {
-    const envFiles = getProjectEnvFiles(selectedProject.path);
+    const envFiles = getProjectEnvFiles(selectedProject.path, maxDepth);
     displayProjectEnvFiles(selectedProject.name, envFiles);
   } else {
     displayInfo('Goodbye! 👋');

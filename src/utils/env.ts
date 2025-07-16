@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { CONFIG } from '../config/constants';
 
 export interface EnvVariable {
   key: string;
@@ -55,35 +56,51 @@ export function extractEnvironment(fileName: string): string {
 }
 
 /**
- * Discover all environment files in a directory
+ * Check if a directory should be skipped during search
  */
-export function discoverEnvFiles(dirPath: string): EnvFile[] {
+function shouldSkipDirectory(dirName: string): boolean {
+  return dirName.startsWith('.') || CONFIG.skipDirectories.includes(dirName as any);
+}
+
+/**
+ * Recursively discover all environment files in a directory and its subdirectories
+ */
+export function discoverEnvFiles(dirPath: string, maxDepth: number = CONFIG.searchDepth, currentDepth: number = 0): EnvFile[] {
   const envFiles: EnvFile[] = [];
   
+  // Stop if we've reached max depth
+  if (currentDepth >= maxDepth) {
+    return envFiles;
+  }
+  
   try {
-    const files = fs.readdirSync(dirPath);
+    const entries = fs.readdirSync(dirPath, { withFileTypes: true });
     
-    // Look for files that match .env patterns
-    const envFilePattern = /^\.env(\.\w+)?$/;
-    
-    for (const file of files) {
-      if (envFilePattern.test(file)) {
-        const filePath = path.join(dirPath, file);
-        
+    for (const entry of entries) {
+      const fullPath = path.join(dirPath, entry.name);
+      
+      if (entry.isFile() && CONFIG.envFilePattern.test(entry.name)) {
         try {
-          const content = fs.readFileSync(filePath, 'utf8');
+          const content = fs.readFileSync(fullPath, 'utf8');
           const variables = parseEnvFile(content);
           
+          // Calculate relative path for display
+          const relativePath = currentDepth > 0 ? path.relative(path.dirname(path.dirname(fullPath)), fullPath) : fullPath;
+          
           envFiles.push({
-            fileName: file,
-            environment: extractEnvironment(file),
-            path: filePath,
+            fileName: entry.name,
+            environment: extractEnvironment(entry.name),
+            path: fullPath,
             variables,
           });
         } catch (error) {
           // Skip files that can't be read
-          console.warn(`Warning: Could not read ${file}`);
+          console.warn(`Warning: Could not read ${entry.name} at ${fullPath}`);
         }
+      } else if (entry.isDirectory() && !shouldSkipDirectory(entry.name)) {
+        // Recursively search subdirectories
+        const subDirFiles = discoverEnvFiles(fullPath, maxDepth, currentDepth + 1);
+        envFiles.push(...subDirFiles);
       }
     }
   } catch (error) {
@@ -101,6 +118,6 @@ export function discoverEnvFiles(dirPath: string): EnvFile[] {
 /**
  * Get environment files for a project
  */
-export function getProjectEnvFiles(projectPath: string): EnvFile[] {
-  return discoverEnvFiles(projectPath);
+export function getProjectEnvFiles(projectPath: string, maxDepth?: number): EnvFile[] {
+  return discoverEnvFiles(projectPath, maxDepth);
 } 
