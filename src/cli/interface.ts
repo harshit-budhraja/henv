@@ -68,7 +68,7 @@ export async function selectProject(projects: GitProject[]): Promise<GitProject 
 /**
  * Display environment files for a project
  */
-export function displayProjectEnvFiles(projectName: string, envFiles: EnvFile[]): void {
+export function displayProjectEnvFiles(projectName: string, envFiles: EnvFile[], maskEnvVariables?: boolean): void {
   if (envFiles.length === 0) {
     displayInfo(`No environment files found in project "${projectName}".`);
     return;
@@ -85,8 +85,10 @@ export function displayProjectEnvFiles(projectName: string, envFiles: EnvFile[])
     if (envFile.variables.length > 0) {
       console.log(chalk.yellow('   Variables:'));
       for (const variable of envFile.variables) {
-        const maskedValue = variable.value.length > 20 
-          ? variable.value.substring(0, 10) + '...' + variable.value.substring(variable.value.length - 5)
+        const maskedValue = maskEnvVariables
+          ? variable.value.length > 20 
+            ? variable.value.substring(0, 10) + '...' + variable.value.substring(variable.value.length - 5)
+            : variable.value
           : variable.value;
         console.log(`     ${chalk.green(variable.key)}=${chalk.dim(maskedValue)}`);
       }

@@ -15,14 +15,15 @@ program
   .command('list')
   .description('List environment variables for the current project or discover projects')
   .option('-d, --dir <directory>', 'Target directory to scan (defaults to current directory)')
-  .option('--depth <number>', 'Maximum depth to search for environment files (default: 7)', '7')
+  .option('-s, --depth <number>', 'Maximum depth to search for environment files', '7')
+  .option('-m, --mask-env-variables', 'Mask environment variables', false)
   .action(async (options) => {
     const depth = parseInt(options.depth, 10);
     if (isNaN(depth) || depth < 1) {
       console.error('Error: Depth must be a positive number');
       process.exit(1);
     }
-    await handleListCommand(options.dir, depth);
+    await handleListCommand(options.dir, depth, options.maskEnvVariables);
   });
 
 // Default command (when no command is specified, run list)

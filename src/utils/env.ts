@@ -31,8 +31,12 @@ export function parseEnvFile(content: string): EnvVariable[] {
     
     // Look for KEY=VALUE pattern
     const match = trimmedLine.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/);
-    if (match) {
-      const [, key, value] = match;
+
+    // Or look for export KEY=VALUE pattern
+    const exportMatch = trimmedLine.match(/^export\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/);
+
+    if (match || exportMatch) {
+      const [, key, value] = match || exportMatch || [];
       // Remove surrounding quotes if present
       const cleanValue = value.replace(/^["']|["']$/g, '');
       variables.push({ key, value: cleanValue });

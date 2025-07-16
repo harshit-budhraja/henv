@@ -12,15 +12,15 @@ import {
 /**
  * Handle the list command
  */
-export async function handleListCommand(targetDir: string = process.cwd(), maxDepth?: number): Promise<void> {
+export async function handleListCommand(targetDir: string = process.cwd(), maxDepth?: number, maskEnvVariables?: boolean): Promise<void> {
   displayWelcome();
 
   try {
     // Check if current directory is a git repository
     if (isGitRepository(targetDir)) {
-      await handleSingleProject(targetDir, maxDepth);
+      await handleSingleProject(targetDir, maxDepth, maskEnvVariables);
     } else {
-      await handleMultipleProjects(targetDir, maxDepth);
+      await handleMultipleProjects(targetDir, maxDepth, maskEnvVariables);
     }
   } catch (error) {
     displayError(`An unexpected error occurred: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -31,7 +31,7 @@ export async function handleListCommand(targetDir: string = process.cwd(), maxDe
 /**
  * Handle the case where we're in a single git project
  */
-async function handleSingleProject(projectPath: string, maxDepth?: number): Promise<void> {
+async function handleSingleProject(projectPath: string, maxDepth?: number, maskEnvVariables?: boolean): Promise<void> {
   const gitRoot = getGitRoot(projectPath);
   const projectDir = gitRoot || projectPath;
   const projectName = path.basename(projectDir);
@@ -39,7 +39,7 @@ async function handleSingleProject(projectPath: string, maxDepth?: number): Prom
   displayInfo(`Found git project: ${projectName}`);
 
   const envFiles = getProjectEnvFiles(projectDir, maxDepth);
-  displayProjectEnvFiles(projectName, envFiles);
+  displayProjectEnvFiles(projectName, envFiles, maskEnvVariables);
 
   if (envFiles.length === 0) {
     console.log('\n💡 Tip: Create environment files like .env, .env.development, .env.production to get started!');
@@ -49,7 +49,7 @@ async function handleSingleProject(projectPath: string, maxDepth?: number): Prom
 /**
  * Handle the case where we need to discover multiple projects
  */
-async function handleMultipleProjects(baseDir: string, maxDepth?: number): Promise<void> {
+async function handleMultipleProjects(baseDir: string, maxDepth?: number, maskEnvVariables?: boolean): Promise<void> {
   displayInfo('Scanning for git projects...');
 
   const projects = findGitProjects(baseDir);
@@ -92,7 +92,7 @@ async function handleMultipleProjects(baseDir: string, maxDepth?: number): Promi
 
   if (selectedProject) {
     const envFiles = getProjectEnvFiles(selectedProject.path, maxDepth);
-    displayProjectEnvFiles(selectedProject.name, envFiles);
+    displayProjectEnvFiles(selectedProject.name, envFiles, maskEnvVariables);
   } else {
     displayInfo('Goodbye! 👋');
   }
