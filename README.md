@@ -19,18 +19,38 @@ npm run build
 
 ## Usage
 
-### List environments in current project
+### Development Workflow (with live code changes)
 
 ```bash
-npm run dev list
-# or after building:
-node dist/index.js list
+# Start development mode - creates temporary 'henv-dev' executable
+npm run dev
+
+# In another terminal, use the global executable anywhere:
+henv-dev list
+henv-dev list --dir /path/to/projects
+
+# Press Ctrl+C in the dev terminal to exit and cleanup
 ```
 
-### List environments in specific directory
+### Production Workflow (built executable)
 
 ```bash
-npm run dev list --dir /path/to/projects
+# Build and install global 'henv' executable
+npm run build
+
+# Use the global executable anywhere:
+henv list
+henv list --dir /path/to/projects
+
+# Uninstall when done
+npm run uninstall-bin
+```
+
+### Local Development (traditional)
+
+```bash
+npm run start list
+npm run start list --dir /path/to/projects
 ```
 
 ## How it works
@@ -82,18 +102,30 @@ Then run:
 npm run dev list
 ```
 
+## Available Scripts
+
+### Main Commands
+- `npm run dev` - Start development mode with temporary global executable and live code changes
+- `npm run build` - Build TypeScript and install production executable to system bin
+- `npm run start` - Run the built version locally (traditional way)
+
+### Utility Commands
+- `npm run dev-bin` - Internal: Start development bin manager
+- `npm run install-bin` - Install built executable to system bin
+- `npm run uninstall-bin` - Remove executables from system bin
+
 ## Development
 
 ```bash
 # Install dependencies
 npm install
 
-# Run in development mode
-npm run dev
+# Development workflow (recommended)
+npm run dev  # Creates henv-dev executable with live reloading
 
-# Build for production
-npm run build
+# Production workflow
+npm run build  # Creates henv executable
 
-# Run built version
-npm start
+# Traditional local development
+npm run start list
 ``` 

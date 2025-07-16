@@ -7,8 +7,11 @@
     "henv": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "ts-node src/index.ts",
+    "build": "tsc && npm run install-bin",
+    "dev": "npm run dev-bin",
+    "dev-bin": "scripts/dev-bin.sh",
+    "install-bin": "scripts/install-bin.sh",
+    "uninstall-bin": "scripts/uninstall-bin.sh",
     "start": "node dist/index.js"
   },
   "keywords": ["cli", "environment", "env", "dotenv"],
