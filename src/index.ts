@@ -3,6 +3,7 @@
 import { Command } from 'commander';
 import { handleListCommand } from './commands/list';
 import { handleSearchCommand } from './commands/search';
+import { handleHelpCommand } from './commands/help';
 import { version, description } from '../package.json';
 
 const program = new Command();
@@ -51,10 +52,15 @@ program
     );
   });
 
+program
+  .command('help')
+  .description('Show help for all henv commands and options')
+  .action(handleHelpCommand);
+
 // Default command (when no command is specified, run list)
 program
   .action(async () => {
-    // TODO: Add help command
+    await handleListCommand();
   });
 
 // Parse command line arguments

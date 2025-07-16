@@ -1,13 +1,13 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { GitProject } from '../utils/git';
-import { EnvFile, EnvVariable } from '../utils/env';
+import { EnvFile } from '../utils/env';
 
 /**
  * Display a welcome message
  */
 export function displayWelcome(): void {
-  // console.log(chalk.cyan.bold('\n🌱 HENV - Environment Variable Manager\n'));
+  console.log(chalk.cyan.bold('\n🌱 HENV - Environment Variable Manager\n'));
 }
 
 /**

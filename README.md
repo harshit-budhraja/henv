@@ -10,6 +10,45 @@ Interactive CLI tool for managing local environment variables across your projec
 - 🎯 **Interactive**: Beautiful CLI interface with project selection
 - 🔒 **Secure**: Masks sensitive values by default
 
+---
+
+## 🆘 Help & Usage
+
+You can always run `henv help` for a comprehensive overview:
+
+```
+Usage: henv <command> [options]
+
+Commands:
+  list [options]           List environment variables for the current project or discover projects
+  search <term> [options]  Search for environment variables by name across projects
+  help                     Show this help message
+
+Options for "list":
+  -d, --dir <directory>         Target directory to scan (defaults to current directory)
+  -s, --depth <number>          Maximum depth to search for environment files (default: 7)
+  -m, --mask-env-variables      Mask environment variable values
+
+Options for "search":
+  -d, --dir <directory>         Target directory to scan (defaults to current directory)
+  -s, --depth <number>          Maximum depth to search for environment files (default: 7)
+  -p, --pattern                 Use regex pattern matching instead of text search
+  -c, --case-sensitive          Make search case sensitive
+  -m, --mask-env-variables      Mask environment variable values
+
+Examples:
+  henv list
+  henv list --dir ./apps --depth 5
+  henv search API_KEY
+  henv search "^LOG_" --pattern
+  henv search api --case-sensitive
+  henv search SECRET --mask-env-variables
+  henv search PORT --depth 3
+  henv search DATABASE --dir /path/to/projects
+```
+
+---
+
 ## Installation
 
 ```bash

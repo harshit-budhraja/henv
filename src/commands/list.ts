@@ -84,7 +84,7 @@ async function handleMultipleProjects(baseDir: string, maxDepth?: number, maskEn
   console.log('');
   projectsWithEnv.forEach(project => {
     const envFiles = getProjectEnvFiles(project.path, maxDepth);
-    console.log(`📁 ${project.name} - ${envFiles.length} environment file(s)`);
+    console.log(`📁 ${project.name} - ${envFiles.length} environment file${envFiles.length === 1 ? '' : 's'}`);
   });
 
   // Allow user to select a project for detailed view
