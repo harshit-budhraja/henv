@@ -7,7 +7,7 @@
     "henv": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc && npm run install-bin",
+    "build": "tsc",
     "dev": "npm run dev-bin",
     "dev-bin": "scripts/dev-bin.sh",
     "install-bin": "scripts/install-bin.sh",
