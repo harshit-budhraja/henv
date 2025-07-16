@@ -27,6 +27,7 @@ npm run dev
 
 # In another terminal, use the global executable anywhere:
 henv-dev list
+henv-dev search API_KEY
 henv-dev list --dir /path/to/projects
 
 # Press Ctrl+C in the dev terminal to exit and cleanup
@@ -40,6 +41,7 @@ npm run build
 
 # Use the global executable anywhere:
 henv list
+henv search DATABASE_URL
 henv list --dir /path/to/projects
 
 # Uninstall when done
@@ -96,10 +98,20 @@ DEBUG=false
 LOG_LEVEL=error" > .env.production
 ```
 
-Then run:
+Then explore your environment variables:
 
 ```bash
+# List all environment files and variables
 npm run dev list
+
+# Search for specific variables
+npm run dev search API_KEY
+npm run dev search DATABASE --pattern
+npm run dev search "^LOG_" --pattern
+
+# Search with options
+npm run dev search api --case-sensitive
+npm run dev search "URL$" --pattern --mask-env-variables
 ```
 
 ## Available Scripts
@@ -108,6 +120,14 @@ npm run dev list
 - `npm run dev` - Start development mode with temporary global executable and live code changes
 - `npm run build` - Build TypeScript and install production executable to system bin
 - `npm run start` - Run the built version locally (traditional way)
+
+### CLI Commands
+- `henv list` - List all environment variables in current context
+- `henv search <term>` - Search for environment variables by name
+  - `--pattern` - Use regex pattern matching
+  - `--case-sensitive` - Case sensitive search
+  - `--depth <n>` - Search depth (default: 7)
+  - `--mask-env-variables` - Mask variable values
 
 ### Utility Commands
 - `npm run dev-bin` - Internal: Start development bin manager
